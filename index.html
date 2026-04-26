@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>EMC2026</title>
+
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2e5e3f">
+<style>
+/* Earth Mondamin Cup 系: フォレストグリーン / ティール / ゴールド / オリーブ */
+:root {
+  --c-forest: #2e5e3f;
+  --c-forest-mid: #356848;
+  --c-forest-deep: #254a33;
+  --c-teal: #438383;
+  --c-teal-dark: #356f6f;
+  --c-gold: #c1a24b;
+  --c-page-bg: #2a3826;
+  --c-page-bg2: #243220;
+  --c-text-on-dark: #f4f6f3;
+  --c-text-muted-on-dark: rgba(244, 246, 243, 0.72);
+  --c-table-head-1: #f2f5f2;
+  --c-table-head-2: #dde4df;
+  --c-table-head-text: #3a4540;
+  --c-rows-bg: #c9d4cc;
+  --c-row-bg: #ffffff;
+  --c-row-border: #c5cec7;
+  --c-row-text: #2a302c;
+  --c-row-meta: #5c6560;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  height: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--c-page-bg) 0%, var(--c-page-bg2) 100%);
+  font-family: Arial, sans-serif;
+  color: var(--c-text-on-dark);
+}
+
+/* ===== HEADER ===== */
+.header {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: minmax(260px, 290px) 1fr 300px;
+  align-items: stretch;
+  background: linear-gradient(90deg, var(--c-forest-deep), var(--c-forest), var(--c-forest-mid));
+  border-bottom: 2px solid rgba(193, 162, 75, 0.4);
+}
+
+/* 左 */
+.left {
+  display: flex;
+  align-items: center;
+  padding: 12px 18px;
+  gap: 12px;
+  background: linear-gradient(135deg, rgba(193, 162, 75, 0.2), transparent);
+}
+
+.brand-icon {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  /* アイコン周りを少し持ち上げてテキストの視覚重心と揃える */
+  transform: translateY(-1px);
+}
+
+.left-text {
+  font-size:22px;
+  font-weight:bold;
+}
+
+.left-sub {
+  font-size: 11px;
+  color: var(--c-text-muted-on-dark);
+}
+
+.left-brand-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+/* 順位ハイライト ON/OFF */
+.rank-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  margin-top: 2px;
+}
+
+.rank-switch input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.rank-switch__track {
+  position: relative;
+  width: 38px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.22);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+}
+
+.rank-switch__track::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #f4f6f3;
+  top: 2px;
+  left: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease;
+}
+
+.rank-switch input:checked + .rank-switch__track {
+  background: var(--c-teal);
+}
+
+.rank-switch input:checked + .rank-switch__track::after {
+  transform: translateX(16px);
+}
+
+.rank-switch__label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--c-text-muted-on-dark);
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+
+/* 中央（見出しブロックをセル内で上下中央）—タップで一覧先頭へ */
+.center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px 16px;
+  min-height: 0;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0.12);
+}
+
+.center:active {
+  opacity: 0.92;
+}
+
+.title {
+  font-size: 42px;
+  font-weight: 900;
+  line-height: 1.05;
+}
+
+.sub {
+  font-size: 14px;
+  color: var(--c-text-muted-on-dark);
+  line-height: 1.25;
+  margin-top: 4px;
+}
+
+/* 右 */
+.right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 12px 18px;
+  text-align: right;
+}
+
+.right-title {
+  font-size: 12px;
+  color: var(--c-text-muted-on-dark);
+}
+
+.datetime {
+  font-size:28px;
+  font-weight:bold;
+}
+
+/* ===== TABLE（ヘッダーと行で同一グリッド・同一横インデント） ===== */
+.leaderboard-table {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  /* 画面端〜カード外縁 */
+  --lb-outer-x: 28px;
+  /* カード内（順位バッジが左にペタッと付かないよう余白） */
+  --lb-inner-x: 20px;
+  /* カメラ列: 「アイコン + 18H x 20カメラ」が収まる固定幅（1fr で横に伸びない） */
+  --cam-btn-width: 13rem;
+  --lb-cols: 64px minmax(160px, 1fr) 72px 52px 52px 52px 52px 88px 76px var(--cam-btn-width);
+  --lb-gap: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.table-header,
+.row {
+  display: grid;
+  grid-template-columns: var(--lb-cols);
+  column-gap: var(--lb-gap);
+  align-items: center;
+}
+
+.table-header {
+  flex-shrink: 0;
+  padding: 14px var(--lb-outer-x);
+  padding-left: calc(var(--lb-outer-x) + var(--lb-inner-x));
+  padding-right: calc(var(--lb-outer-x) + var(--lb-inner-x));
+  background: linear-gradient(180deg, var(--c-table-head-1), var(--c-table-head-2));
+  color: var(--c-table-head-text);
+  border-bottom: 3px solid var(--c-teal);
+  font-weight: bold;
+}
+
+.rows {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding: 10px var(--lb-outer-x) 20px;
+  background: var(--c-rows-bg);
+  position: relative;
+  isolation: isolate;
+  z-index: 0;
+}
+
+.row {
+  padding: 14px var(--lb-inner-x);
+  margin: 8px 0;
+  color: var(--c-row-text);
+  background: var(--c-row-bg);
+  border: 1px solid var(--c-row-border);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(46, 94, 63, 0.08);
+  transition: transform 1.6s cubic-bezier(0.22, 1, 0.36, 1), background 0.6s;
+  transform-origin: center center;
+  position: relative;
+  z-index: 0;
+}
+
+/* 順位列：見出しとバッジを列中央で揃える */
+.table-header > div:nth-child(1),
+.row > div:nth-child(1) {
+  justify-self: center;
+  text-align: center;
+}
+
+.table-header > div:nth-child(2),
+.row > div:nth-child(2) {
+  justify-self: start;
+  text-align: left;
+  min-width: 0;
+}
+
+.table-header > div:nth-child(n + 3),
+.row > div:nth-child(n + 3) {
+  justify-self: stretch;
+  text-align: center;
+}
+
+/* 順位（列中央に収まる円形バッジ） */
+.rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: var(--c-forest);
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+/* 名前 */
+.name {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--c-row-text);
+}
+
+.meta {
+  font-size: 12px;
+  color: var(--c-row-meta);
+}
+
+/* スコア */
+.score {
+  font-size:28px;
+  font-weight:bold;
+  text-align:center;
+}
+
+.under {
+  color: #1a7a48;
+}
+
+.over {
+  color: #b83232;
+}
+
+.cam-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+}
+
+.cam-cell--empty {
+  min-height: 2.75rem;
+}
+
+.cam-btn {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: 100%;
+  padding: 0.65rem 0.125rem;
+  min-height: 2.75rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--c-teal);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.cam-btn__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.cam-btn__text {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.cam-btn:hover {
+  background: var(--c-teal-dark);
+}
+
+.cam-btn:active {
+  transform: scale(0.98);
+}
+
+.cam-btn__icon svg {
+  display: block;
+  width: 1.35rem;
+  height: 1.35rem;
+  fill: currentColor;
+  opacity: 0.95;
+}
+
+/* アニメ（明るい行用のハイライト） */
+.move-up {
+  background: #d4ede0 !important;
+}
+
+.move-down {
+  background: #f3dede !important;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <div class="left">
+    <div class="brand-icon">
+      <img src="golficon.png" width="52" height="52" alt="" />
+    </div>
+    <div class="left-brand-stack">
+      <div class="left-text">GOLF LIVE</div>
+      <div class="left-sub">MULTI-CAMERA BROADCAST</div>
+      <label class="rank-switch">
+        <input type="checkbox" id="rankHighlightSwitch" />
+        <span class="rank-switch__track" aria-hidden="true"></span>
+        <span class="rank-switch__label">順位ハイライト</span>
+      </label>
+    </div>
+  </div>
+
+  <div
+    class="center"
+    role="button"
+    tabindex="0"
+    aria-label="リーダーボードの先頭（1位付近）へスクロール"
+  >
+    <div class="title">LEADERBOARD</div>
+    <div class="sub">EARTH MONDAMIN CUP 2026</div>
+  </div>
+
+  <div class="right">
+    <div class="right-title">OFFICIAL UPDATE TIME</div>
+    <div class="datetime" id="datetime">--</div>
+  </div>
+</div>
+
+<div class="leaderboard-table">
+  <div class="table-header">
+    <div>順位</div>
+    <div>選手名</div>
+    <div>スコア</div>
+    <div>R1</div>
+    <div>R2</div>
+    <div>R3</div>
+    <div>R4</div>
+    <div>通算/経過</div>
+    <div>スタート</div>
+    <div>カメラ視聴</div>
+  </div>
+
+  <div class="rows" id="rows"></div>
+</div>
+
+<script>
+let rowMap = new Map();
+let prevRects = new Map();
+
+// ===== datetime =====
+async function loadDatetime(){
+  const res = await fetch("datetime.txt?ts="+Date.now());
+  document.getElementById("datetime").innerText = await res.text();
+}
+
+// ===== JSON =====
+async function loadData(){
+  const res = await fetch("leading.json?ts="+Date.now());
+  const json = await res.json();
+  const list = Array.isArray(json.players) ? json.players : [];
+  update(list);
+}
+
+/** 台数 1〜20（ゼロ埋めなし）。省略時は 3 */
+function cameraCountNumber(p) {
+  let n = parseInt(p.camera_count ?? p.cameras, 10);
+  if (Number.isNaN(n)) n = 3;
+  return Math.max(1, Math.min(20, n));
+}
+
+/** 「8H x 3カメラ」形式（x 前後は半角スペース） */
+function cameraButtonCaption(p) {
+  const hole = cameraButtonHoleSlot(p);
+  const c = cameraCountNumber(p);
+  return hole + " x " + c + "カメラ";
+}
+
+/** コースアウト・未出場など（JSONの retire が入っている場合） */
+function isCourseOutOrAbsent(p) {
+  const r = p.retire;
+  if (r == null || r === "") return false;
+  if (typeof r === "string" && r.trim() === "") return false;
+  return true;
+}
+
+/** 通算/経過（thru）を 1〜18 の完了ホール数として解釈。F・未開始・不正は null */
+function parseThruCompletedHoles(thru) {
+  if (thru == null) return null;
+  const s = String(thru).trim();
+  if (s === "" || s === "-") return null;
+  if (/^f$/i.test(s)) return null;
+  const n = parseInt(s, 10);
+  if (Number.isNaN(n) || n < 1 || n > 18) return null;
+  return n;
+}
+
+/** 通算/経過列（ホールアウトは「F」、出場前・コースアウトは「ー」） */
+function thruColumnText(p) {
+  if (isCourseOutOrAbsent(p)) return "ー";
+  const raw = p.thru;
+  if (raw == null || String(raw).trim() === "") return "ー";
+  if (/^f$/i.test(String(raw).trim())) return "F";
+  const n = parseThruCompletedHoles(raw);
+  if (n == null) return "ー";
+  return String(raw).trim();
+}
+
+/**
+ * カメラボタン中央のホール表示（1H / 10H）、ホールアウトは F、未出場・未スタート・コースアウトは ー
+ */
+function cameraButtonHoleSlot(p) {
+  if (isCourseOutOrAbsent(p)) return "ー";
+  const raw = p.thru;
+  if (raw == null || String(raw).trim() === "") return "ー";
+  if (/^f$/i.test(String(raw).trim())) return "F";
+  const n = parseThruCompletedHoles(p.thru);
+  if (n == null) return "ー";
+  let hole = n + 1;
+  if (hole === 19) hole = 1;
+  return hole + "H";
+}
+
+/** リスト内で行の縦中央が見える位置へスクロール（順位アップの選手を中心に） */
+function scrollRowsToCenterRow(rowEl, behavior) {
+  const sc = document.getElementById("rows");
+  if (!sc || !rowEl || !sc.contains(rowEl)) return;
+  const scRect = sc.getBoundingClientRect();
+  const rowRect = rowEl.getBoundingClientRect();
+  const scMid = scRect.top + sc.clientHeight / 2;
+  const rowMid = rowRect.top + rowRect.height / 2;
+  const delta = rowMid - scMid;
+  const maxScroll = Math.max(0, sc.scrollHeight - sc.clientHeight);
+  const nextTop = Math.max(0, Math.min(sc.scrollTop + delta, maxScroll));
+  sc.scrollTo({ top: nextTop, behavior: behavior || "smooth" });
+}
+
+/** 上昇アニメ中、行がリスト中央付近に来るようスクロールを追従（毎フレーム） */
+function scrollFollowRowWhileMoving(rowEl, durationMs) {
+  let alive = true;
+  const start = performance.now();
+  function step() {
+    if (!alive) return;
+    scrollRowsToCenterRow(rowEl, "auto");
+    if (performance.now() - start < durationMs) {
+      requestAnimationFrame(step);
+    }
+  }
+  requestAnimationFrame(step);
+  return () => {
+    alive = false;
+  };
+}
+
+/**
+ * rank を数値化してソート用にする（1位が最上段になる昇順: 1, 2, 3, …）。
+ * 全角数字・先頭の T（同率表記）・余分な空白に対応する。
+ */
+function rankNumeric(p) {
+  let s = String(p.rank ?? "").trim();
+  if (!s) return 999999;
+  try {
+    s = s.normalize("NFKC");
+  } catch (_) {
+    /* ignore */
+  }
+  s = s.replace(/^T+\s*/i, "").trim();
+  const m = s.match(/^\D*(\d+)/);
+  if (!m) return 999999;
+  const n = parseInt(m[1], 10);
+  return Number.isFinite(n) ? n : 999999;
+}
+
+// ===== 更新 =====
+function update(players) {
+  const container = document.getElementById("rows");
+  if (!container) return;
+  if (!Array.isArray(players)) players = [];
+
+  prevRects.clear();
+  rowMap.forEach((row, id) => {
+    prevRects.set(String(id), row.getBoundingClientRect());
+  });
+
+  players = players
+    .filter((p) => p.rank !== "")
+    .sort((a, b) => {
+      const d = rankNumeric(a) - rankNumeric(b);
+      if (d !== 0) return d;
+      return String(a.cd).localeCompare(String(b.cd));
+    });
+
+  const nextIds = new Set(players.map((p) => String(p.cd)));
+  rowMap.forEach((row, id) => {
+    const key = String(id);
+    if (!nextIds.has(key)) {
+      row.remove();
+      prevRects.delete(key);
+    }
+  });
+
+  let newMap = new Map();
+
+  players.forEach((p) => {
+    const id = String(p.cd);
+    let row = rowMap.get(id);
+    if (!row) {
+      row = rowMap.get(p.cd);
+    }
+    if (!row) {
+      row = document.createElement("div");
+      row.className = "row";
+    }
+
+    let rankRaw = String(p.rank ?? "").trim();
+    try {
+      rankRaw = rankRaw.normalize("NFKC");
+    } catch (_) {
+      /* ignore */
+    }
+    const rankCore = rankRaw.replace(/^T+/i, "").trim();
+    const pos =
+      p.tie === "1" || p.tie === 1 ? "T" + rankCore : rankCore;
+
+    let score = p.today ?? "";
+    let cls="";
+    if(score<0) cls="under";
+    if(score>0) cls="over";
+
+    const thruText = thruColumnText(p);
+    const showCamBtn = thruText !== "F" && thruText !== "ー";
+    const camCaption = showCamBtn ? cameraButtonCaption(p) : "";
+
+    const camCellHtml = showCamBtn
+      ? `<div class="cam-cell">
+        <button type="button" class="cam-btn" data-player-cd="${p.cd}">
+          <span class="cam-btn__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+          </span>
+          <span class="cam-btn__text">${camCaption}</span>
+        </button>
+      </div>`
+      : `<div class="cam-cell cam-cell--empty" aria-hidden="true"></div>`;
+
+    row.innerHTML = `
+      <div class="rank">${pos}</div>
+      <div>
+        <div class="name">${p.name_jp}</div>
+        <div class="meta">${p.name_en} / ROUND ${p.round}</div>
+      </div>
+      <div class="score ${cls}">${score}</div>
+      <div>${p.daily?.[0]??""}</div>
+      <div>${p.daily?.[1]??""}</div>
+      <div>${p.daily?.[2]??""}</div>
+      <div>${p.daily?.[3]??""}</div>
+      <div>${thruText}</div>
+      <div>${p.StartTime??""}</div>
+      ${camCellHtml}
+    `;
+
+    container.appendChild(row);
+    newMap.set(id, row);
+  });
+
+  // FLIP
+  const rankHl =
+    document.getElementById("rankHighlightSwitch")?.checked === true;
+
+  const flips = [];
+  newMap.forEach((row, id) => {
+    const newRect = row.getBoundingClientRect();
+    const oldRect = prevRects.get(id);
+    if (!oldRect) return;
+    const dy = oldRect.top - newRect.top;
+    if (Math.abs(dy) > 1) {
+      const movedUp = dy > 0;
+      flips.push({
+        row,
+        cd: id,
+        dy,
+        movedUp,
+        emphasize: rankHl && movedUp,
+      });
+    }
+  });
+
+  const rankByCd = new Map(
+    players.map((p) => [String(p.cd), rankNumeric(p)])
+  );
+
+  /** 順位アップのうち、新順位が最も良い（数値が最小）の1行をメイン表示。同順位なら移動量が大きい方 */
+  let scrollTarget = null;
+  let scrollBestRank = 999999;
+  let scrollBestDy = -1;
+  for (const f of flips) {
+    if (!(rankHl && f.movedUp)) continue;
+    const rnk = rankByCd.get(f.cd);
+    if (rnk === undefined) continue;
+    if (
+      rnk < scrollBestRank ||
+      (rnk === scrollBestRank && f.dy > scrollBestDy)
+    ) {
+      scrollBestRank = rnk;
+      scrollBestDy = f.dy;
+      scrollTarget = f.row;
+    }
+  }
+
+  flips.forEach((f) => {
+    const { row, dy, movedUp, emphasize } = f;
+    if (movedUp) row.classList.add("move-up");
+    else row.classList.add("move-down");
+
+    row.style.transition = "none";
+    row.style.transform = `translateY(${dy}px)`;
+
+    if (emphasize) {
+      row.style.isolation = "isolate";
+      row.style.boxShadow =
+        "0 10px 32px rgba(26, 94, 63, 0.38), 0 0 0 2px rgba(193, 162, 75, 0.55)";
+      row.style.filter = "brightness(1.04)";
+      if (row === scrollTarget) {
+        row.style.zIndex = "200";
+      } else {
+        row.style.zIndex = "30";
+      }
+    } else {
+      row.style.zIndex = "2";
+    }
+
+    row.offsetHeight;
+  });
+
+  const easeMove = "cubic-bezier(0.22, 1, 0.36, 1)";
+  const easeShrink = "cubic-bezier(0.25, 0.82, 0.25, 1)";
+  const PAUSE_AFTER_SCROLL_MS = 100;
+  const SCALE_UP_MS = 220;
+  const MOVE_MS = 1250;
+  const SHRINK_MS = 520;
+  const scaleHi = 1.2;
+
+  const clearFlipRowStyles = (row) => {
+    row.classList.remove("move-up", "move-down");
+    row.style.transition = "";
+    row.style.transform = "";
+    row.style.transformOrigin = "";
+    row.style.boxShadow = "";
+    row.style.filter = "";
+    row.style.zIndex = "";
+    row.style.isolation = "";
+  };
+
+  /** 順位ハイライトOFF、またはアップ行なし: 従来の一斉FLIP */
+  const startFlipAnimations = () => {
+    flips.forEach((f) => {
+      const { row } = f;
+      row.style.transition =
+        "transform 1.6s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s ease, filter 0.45s ease";
+      row.style.transform = "";
+      setTimeout(() => clearFlipRowStyles(row), 1600);
+    });
+  };
+
+  /**
+   * メイン（新順位が最も良い上昇行）にフォーカス:
+   * 中央スクロール → 0.1秒 → その行だけ1.2倍 → 全行同時に移動（メインは追従スクロール）→ メインだけ1.0へ
+   */
+  const startFlipAnimationsWithShowcase = () => {
+    const main = scrollTarget;
+    const mainFlip = flips.find((f) => f.row === main);
+    const mainDy = mainFlip ? mainFlip.dy : 0;
+
+    requestAnimationFrame(() => {
+      scrollRowsToCenterRow(main, "auto");
+
+      setTimeout(() => {
+        main.style.transformOrigin = "center center";
+        main.style.transition = `transform ${SCALE_UP_MS}ms ${easeMove}`;
+        main.style.transform = `translateY(${mainDy}px) scale(${scaleHi})`;
+
+        setTimeout(() => {
+          const cancelFollow = scrollFollowRowWhileMoving(main, MOVE_MS + 80);
+          flips.forEach((f) => {
+            const { row } = f;
+            if (row === main) {
+              row.style.transition = `transform ${MOVE_MS}ms ${easeMove}`;
+              row.style.transform = `translateY(0) scale(${scaleHi})`;
+            } else {
+              row.style.transition = `transform ${MOVE_MS}ms ${easeMove}, box-shadow 0.45s ease, filter 0.45s ease`;
+              row.style.transform = "";
+            }
+          });
+
+          setTimeout(() => {
+            cancelFollow();
+            main.style.transition = `transform ${SHRINK_MS}ms ${easeShrink}`;
+            main.style.transform = "translateY(0) scale(1)";
+            setTimeout(() => {
+              flips.forEach((f) => clearFlipRowStyles(f.row));
+            }, SHRINK_MS + 40);
+          }, MOVE_MS + 20);
+        }, SCALE_UP_MS);
+      }, PAUSE_AFTER_SCROLL_MS);
+    });
+  };
+
+  if (rankHl && scrollTarget) {
+    startFlipAnimationsWithShowcase();
+  } else {
+    requestAnimationFrame(startFlipAnimations);
+  }
+
+  rowMap = newMap;
+}
+
+function scrollLeaderboardToTop() {
+  const rows = document.getElementById("rows");
+  if (!rows) return;
+  rows.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+const leaderHeaderTap = document.querySelector(".center");
+if (leaderHeaderTap) {
+  leaderHeaderTap.addEventListener("click", scrollLeaderboardToTop);
+  leaderHeaderTap.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      scrollLeaderboardToTop();
+    }
+  });
+}
+
+// 初回
+loadDatetime();
+loadData();
+
+// 1秒更新
+setInterval(()=>{
+  loadDatetime();
+  loadData();
+},1000);
+</script>
+
+</body>
+</html>

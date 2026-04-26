@@ -1,0 +1,19 @@
+{
+  "name": "EMC2026",
+  "short_name": "EMC2026",
+  "description": "EMC2026 Leaderboard",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#2a3826",
+  "theme_color": "#2e5e3f",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon",
+      "purpose": "any"
+    }
+  ]
+}

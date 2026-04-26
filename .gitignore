@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# エディタ・IDE（共有したくない場合のみ）
+# .vscode/
+# .idea/
+
+# ログ・一時ファイル
+*.log
+*.tmp
+*.swp
+*~
+
+# ローカル用メモ（リポジトリに含めない場合）
+rsyncmemo.txt
+
+# 配信データを Git に載せたくない場合は次の2行の先頭 # を外す
+# （GitHub Pages ではサンプルの leading.json をコミットする運用が多いです）
+# leading.json
+# datetime.txt
